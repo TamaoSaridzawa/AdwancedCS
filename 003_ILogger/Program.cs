@@ -10,34 +10,35 @@ namespace _003_ILogger
             Pathfinder pathfinder = new Pathfinder(new ConsoleLogWritter());
             Pathfinder pathfinderTwo = new Pathfinder(new SecureConsoleLogWritter());
             Pathfinder pathfinderFree = new Pathfinder(new FileLogWritter());
-            Pathfinder pathfinderFoo = new Pathfinder(new SecureFileLogWritter());
+            Pathfinder pathfinderFour = new Pathfinder(new SecureFileLogWritter());
             Pathfinder pathfinderFive = new Pathfinder(new ConsoleLogWritterAndSecureFile());
 
-            pathfinder.Find("Пишет в консоль");
-            pathfinderTwo.Find("Пишет в консоль по пятницам");
-            pathfinderFree.Find("Пишет в файл");
-            pathfinderFoo.Find("Пишет в файл по пятницам");
-            pathfinderFive.Find("Пишет в консоль, а по пятницам еще и в файл");
+            pathfinder.Find("Error");
+            pathfinderTwo.Find("Error");
+            pathfinderFree.Find("Error");
+            pathfinderFour.Find("Error");
+            pathfinderFive.Find("Error");
 
             Console.ReadKey();
         }
     }
 
-    class CheckDayRecorder
+    class RecordDateChecker
     {
-        public bool ChekData()
+        public bool IsRecord()
         {
             if (DateTime.Now.DayOfWeek == DayOfWeek.Friday)
             {
                 return true;
             }
+
             return false;
         }
     }
 
     abstract class Logger 
     {
-        protected CheckDayRecorder _checkDayRecorder = new CheckDayRecorder();
+        protected RecordDateChecker RecordDateChecker = new RecordDateChecker();
 
         public abstract void WritteError(string message);
     }
@@ -59,7 +60,7 @@ namespace _003_ILogger
     {
         public override void WritteError(string message)
         {
-            if (_checkDayRecorder.ChekData())
+            if (RecordDateChecker.IsRecord())
             {
                 base.WritteConsole(message);
             }
@@ -83,7 +84,7 @@ namespace _003_ILogger
     {
         public override void WritteError(string message)
         {
-            if (_checkDayRecorder.ChekData())
+            if (RecordDateChecker.IsRecord())
             {
                 base.WritteFail(message);
             }
@@ -96,7 +97,7 @@ namespace _003_ILogger
         {
             base.WritteConsole(message);
 
-            if (_checkDayRecorder.ChekData())
+            if (RecordDateChecker.IsRecord())
             {
                 base.WritteFail(message);
             }
@@ -105,16 +106,16 @@ namespace _003_ILogger
 
     class Pathfinder
     {
-        private Logger _loger;
+        private Logger _logger;
 
         public Pathfinder(Logger logger)
         {
-            _loger = logger;
+            _logger = logger;
         }
 
-        public void Find( string message)
+        public void Find(string message)
         {
-            _loger.WritteError(message);
+            _logger.WritteError(message);
         }
     }
 }
